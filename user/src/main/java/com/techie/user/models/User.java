@@ -1,4 +1,4 @@
-package models;
+package com.techie.user.models;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
