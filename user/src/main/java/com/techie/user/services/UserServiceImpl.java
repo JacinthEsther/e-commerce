@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.techie.user.services.SecurityConstants.*;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -28,9 +30,9 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
 
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dikhupelx",
-                "api_key", "145123527243894",
-                "api_secret", "yfQJGz3irKt7Ck2Lc3r2h2fwa_s"));
+                "cloud_name", CLOUD_NAME,
+                "api_key", API_KEY,
+                "api_secret", API_SECRET));
         File file = convertMultiPartToFile(request.getFile());
         Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
         ImageUrl imageUrl = new ImageUrl();

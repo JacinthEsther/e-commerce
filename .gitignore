@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+com/techie/user/services/SecurityConstants.java
