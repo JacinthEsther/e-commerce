@@ -6,6 +6,7 @@ import com.techie.user.dtos.requests.AddUserRequest;
 import com.techie.user.dtos.responses.AddUserResponse;
 import com.techie.user.models.ImageUrl;
 import com.techie.user.models.User;
+import com.techie.user.repositories.ImageRepo;
 import com.techie.user.repositories.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.techie.user.services.SecurityConstants.*;
 
@@ -23,7 +25,7 @@ import static com.techie.user.services.SecurityConstants.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-
+    private final ImageRepo imageRepo;
     @Override
     public AddUserResponse add(AddUserRequest request) throws IOException {
         User user = new User();
@@ -37,8 +39,10 @@ public class UserServiceImpl implements UserService {
         Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
         ImageUrl imageUrl = new ImageUrl();
         imageUrl.setUrl((String)uploadResult.get("url"));
+        ImageUrl savedImage= imageRepo.save(imageUrl);
 
-        user.setImage(imageUrl);
+        user.setImage(savedImage);
+
         user.setPassword(request.getPassword());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setUsername(request.getUsername());
@@ -54,19 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    public UploadResponseDto uploadImages(MultipartFile multipartFile) throws IOException {
-//
-//        UploadResponseDto responseDto = new UploadResponseDto();
-//        responseDto.setUrl((String) uploadResult.get("url"));
-//        ImageUrl imageUrl = new ImageUrl();
-//        imageUrl.setUrl(responseDto.getUrl());
-//        imageUrlRepository.save(imageUrl);
-//        return  responseDto;
-//    }
-
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException, IOException {
-        File convFile = new File(file.getOriginalFilename());
+        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
         fos.close();
