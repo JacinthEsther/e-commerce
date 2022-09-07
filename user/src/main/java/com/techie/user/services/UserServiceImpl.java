@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(request.getPassword());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setUsername(request.getUsername());
+        userCanReceiveEmail("/",user);
 
         User savedUser = userRepo.save(user);
 
@@ -63,9 +64,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
-
-    private File convertMultiPartToFile(MultipartFile file) throws IOException, IOException {
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
@@ -76,7 +75,7 @@ public class UserServiceImpl implements UserService {
     private void userCanReceiveEmail(String host, User user){
         VerificationMessageRequest message = VerificationMessageRequest.builder()
                 .subject("VERIFY EMAIL")
-                .sender("ehizman.tutoredafrica@gmail.com")
+                .sender("techie@gmail.com")
                 .receiver(user.getEmail())
                 .domainUrl(host)
 
